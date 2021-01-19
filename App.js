@@ -8,17 +8,13 @@
 
 import React from 'react';
 import {
-  SafeAreaView,
   StyleSheet,
-  ScrollView,
   View,
-  Text,
-  StatusBar,
   Button,
   Platform,
   PermissionsAndroid,
-  NativeModules,
   AppRegistry,
+  Alert,
 } from 'react-native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
@@ -27,16 +23,15 @@ import ForegroundService from 'react-native-foreground-service';
 
 let foregroundTask = async (params) => {
   console.log(params);
-  // let res = await fetch('https://jsonplaceholder.typicode.com/todos/2');
-  // let data = await res.json();
-  // console.log(data);
+
+  // take your device location and send to the server
 
   try {
     const granted = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
       {
-        title: 'Conveyence App Need Location Permission',
-        message: 'we need this to track your operator and order status',
+        title: ' App Need Location Permission',
+        message: 'we need this to track your status',
         buttonPositive: 'OK',
       },
     );
@@ -54,7 +49,7 @@ let foregroundTask = async (params) => {
         },
       );
     } else {
-      alert('permission not given');
+      Alert.alert('permission not given');
     }
   } catch (e) {
     console.error(e);
@@ -66,9 +61,7 @@ const App = () => {
   React.useEffect(() => {}, []);
 
   const create = async () => {
-    // then later, start service, and send tasks
-
-    if (Platform.OS == 'android') {
+    if ((Platform.OS == 'android', Platform.Version >= 26)) {
       let notificationConfig = {
         id: 3,
         title: 'Conveyence location service',
@@ -84,6 +77,8 @@ const App = () => {
         taskName: 'location',
         delay: 10000,
       });
+    } else {
+      Alert.alert('Platform not Supported');
     }
   };
   const stop = async () => {
